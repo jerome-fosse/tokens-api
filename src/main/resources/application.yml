@@ -1,0 +1,147 @@
+server:
+  port: 4400
+  servlet:
+    context-path: "/"
+
+features:
+  access-token-validation:
+    enabled: ${tokens.features.access-token-validation.enabled:true}
+    controller:
+      enabled: ${tokens.features.access-token-validation.controller.enabled:false}
+
+logging:
+  level:
+    root: ${tokens.logger.level.root:ERROR}
+    com:
+      wcomp:
+        app: ${tokens.logger.level.application:INFO}
+    AUDIT_LOGGER: ${tokens.logger.level.audit:INFO}
+
+# handle healtcheck and info endpoints
+management:
+  endpoint:
+    info:
+      enabled: true
+      cache:
+        time-to-live: ${tokens.endpoint.cache.time-to-live.info:10s}
+    health:
+      enabled: false
+      cache:
+        time-to-live: ${tokens.endpoint.cache.time-to-live.healthcheck:10s}
+    healthcheckAll:
+      enabled: true
+      cache:
+        time-to-live: ${tokens.endpoint.cache.time-to-live.healthcheckAll:10s}
+    healthcheckByType:
+      enabled: true
+      cache:
+        time-to-live: ${tokens.endpoint.cache.time-to-live.healthcheckByType:10s}
+      timeout: ${tokens.endpoint.timeoutInMs.healthcheckByType:4000}
+            
+  endpoints:
+    web:
+      base-path: /
+      path-mapping.info: application.info
+      exposure:
+        include: info,healthcheckAll,healthcheckByType
+      path-mapping.healthcheckByType: healthcheck
+      path-mapping.healthcheckAll: healthcheck/all
+  info:
+    build:
+      enabled: false
+    git:
+      enabled: true
+      mode: simple
+  health:
+    mongo:
+      enabled: true
+    redis:
+      enabled: true
+# fields to display in /application.info, we could have used BuildInfoContributor & GitInfoContributor
+# https://github.com/spring-projects/spring-boot/blob/v2.1.3.RELEASE/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/info/BuildInfoContributor.java
+# https://github.com/spring-projects/spring-boot/blob/v2.1.3.RELEASE/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/info/GitInfoContributor.java
+# but it constrains the fields naming
+info:
+  name: '@project.name@'
+  description: '@project.description@'
+  version: '@project.version@'
+  buildDate: '@timestamp@'
+  organization: '@project.groupId@'
+  commit: '@git.commit.id@'
+  changeset: '@git.commit.message.short@'
+  versionQualifier: '@parsedVersion.qualifier@'
+  color: ${COLOR}
+  type: 'springboot2'
+  hystrix: ${spring.cloud.circuit.breaker.enabled:false}
+
+# SPRING
+spring:
+  jackson: # timezone jackson
+    time-zone: "Europe/Paris" #to see if it's really what we want...
+    default-property-inclusion: non_null
+    serialization.write-dates-as-timestamps: false
+  redis:
+    host: ${redis.hostname}
+    port: ${redis.port}
+    time-to-live:
+      account-info: 300
+    # for fine grained control
+  #    lettuce:
+  #      pool:
+  #        max-active: 8
+  #        max-idle: 8
+  #        max-wait: 1ms
+  #        min-idle: 0
+  #      shutdown-timeout:
+  #    timeout:
+  #    ssl: false
+  data:
+    mongodb:
+      uri: "${tokens.mongo.url}"
+      database: "${tokens.mongo.database}"
+
+# Sleuth
+  # Logs : https://cloud.spring.io/spring-cloud-static/spring-cloud-sleuth/2.1.0.RELEASE/multi/multi__propagation.html
+  sleuth:
+    baggage-keys:
+      - X-CorrelationId
+      - X-UserId
+      - X-Forwarded-For
+      - X-Realtime-Id
+      - X-Device-Type
+      - X-Device-Platform
+      - X-Device-ServerUrl
+    propagation-keys:
+      - X-CorrelationId
+      - X-UserId
+      - X-Forwarded-For
+      - X-Realtime-Id
+    log:
+      slf4j:
+        whitelisted-mdc-keys:
+          - X-CorrelationId
+          - X-UserId
+          - X-Forwarded-For
+          - X-Realtime-Id
+          - X-Device-Type
+          - X-Device-Platform
+          - X-Device-ServerUrl
+
+    sampler:
+      probability: 1.0
+# Patterns à ignorer en plus de ceux de spring sleuth
+    web:
+      additionalSkipPattern: (/healthcheck|/healthcheck/.*)
+
+wcomp:
+  connect:
+    base-url: "https://r.connect.wcomp.com"
+    user: "UNI_01005_DEV"
+    password: "EmeraudeUNI02"
+    account-creation-callback-url: "http://do-not-forget-to-give-it-to-us"
+    account-creation-callback-mobile-url: "http://do-not-forget-to-give-it-to-us"
+    send-account-creation-notif-email: true
+    account-api-url: "${wcomp.connect.base-url}/api/accounts"
+    openAM-api-url: "${wcomp.connect.base-url}/SvcECZ/oauth2"
+    acceptable:
+      mean: 0.98

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <!-- see https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-logging.html -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <logger name="org.springframework.web" level="INFO"/>
+
+    <springProperty scope="context" name="springAppName" source="spring.application.name"/>
+
+    <springProfile name="logtxt">
+        <property name="CONSOLE_LOG_PATTERN"
+                  value="%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} \\(%X{X-CorrelationId:--}|%X{X-UserId:--}|%X{X-Forwarded-For:--}|%X{elapsed_time_ms:--}ms\\) %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+        <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    </springProfile>
+
+    <springProfile name="!logtxt">
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <logLevel>${logging.level.com.wcomp.app}</logLevel>
+                    <timestamp>
+                        <fieldName>apptimestamp</fieldName>
+                    </timestamp>
+                    <threadName/>
+                    <loggerName/>
+                    <message/>
+                    <provider class="com.wcomp.app.tokens.mdc.CustomMdcJsonProvider">
+                        <fieldName>mdc</fieldName>
+                        <excludeMdcKeyName>X-B3-ParentSpanId</excludeMdcKeyName>
+                        <excludeMdcKeyName>X-B3-SpanId</excludeMdcKeyName>
+                        <excludeMdcKeyName>X-B3-TraceId</excludeMdcKeyName>
+                        <excludeMdcKeyName>X-Span-Export</excludeMdcKeyName>
+                        <excludeMdcKeyName>X-CorrelationId</excludeMdcKeyName>
+                        <excludeMdcKeyName>X-UserId</excludeMdcKeyName>
+                        <excludeMdcKeyName>X-Forwarded-For</excludeMdcKeyName>
+                        <excludeMdcKeyName>X-Realtime-Id</excludeMdcKeyName>
+                        <excludeMdcKeyName>X-Device-Type</excludeMdcKeyName>
+                        <excludeMdcKeyName>X-Device-Platform</excludeMdcKeyName>
+                        <excludeMdcKeyName>X-Device-ServerUrl</excludeMdcKeyName>
+                        <excludeMdcKeyName>spanExportable</excludeMdcKeyName>
+                    </provider>
+                    <stackTrace>
+                        <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                            <maxDepthPerThrowable>full</maxDepthPerThrowable>
+                            <maxLength>full</maxLength>
+                            <shortenedClassNameLength>full</shortenedClassNameLength>
+                            <rootCauseFirst>false</rootCauseFirst>
+                        </throwableConverter>
+                    </stackTrace>
+                </providers>
+            </encoder>
+        </appender>
+
+        <springProperty name="rootLevel" source="logging.level.root" defaultValue="INFO"/>
+
+        <root level="${rootLevel}">
+            <appender-ref ref="STDOUT"/>
+        </root>
+    </springProfile>
+</configuration>

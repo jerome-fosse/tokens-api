@@ -1,0 +1,57 @@
+logging:
+  level:
+    root: INFO
+    com:
+      wcomp:
+        app: DEBUG
+
+management:
+  endpoint:
+    info:
+      enabled: false
+      cache:
+        time-to-live: 10s
+    health:
+      enabled: false
+    healthcheckAll:
+      enabled: false
+    healthcheckByType:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include:
+COLOR: development
+
+# mongo
+spring:
+  data:
+    mongodb:
+      uri: "mongodb://127.0.0.1:27017/?minPoolSize=16&maxPoolSize=512&waitQueueMultiple=2&waitQueueTimeoutMS=5000"
+      database: "Tokens"
+
+wcomp:
+  connect:
+    base-url: "http://localhost"
+    user: "user"
+    password: "password"
+    account-creation-callback-url: "http://do-not-forget-to-give-it-to-us"
+    send-account-creation-notif-email: true
+    account-api-url: "${wcomp.connect.base-url}/api/accounts"
+    openAM-api-url: "${wcomp.connect.base-url}/SvcECZ/oauth2"
+    acceptable:
+      mean: 0.98
+    key:
+      public: |
+                -----BEGIN PUBLIC KEY-----
+                MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6vB+aOUF7s5sKGLCQPA2
+                bsG9KG3RuoFYpVWTc1/wpHMI+QSE3Hcu540wf00O059NDwVUEl4XaRBfz1KtBx8u
+                IiMX68xdRDnEeqxjnOCx2zyuCW84dqj1c1VuqSw14Qf8syCBNqSERGchtCioYLKs
+                Xf9qceIscVmm2kjVHzxhNz2wvwVDrXZTI7mITGl4UxAUoiP900ohln1aW7zYao8l
+                9Jv9kamR81fDnaOkK+WshSqm4ktfa7CQNS7d50w63K7kQ8balQ7jokIN3RLB6LFS
+                ZTosbv/B+S9skBn/aQxM0jIH6bh74OZd6onCl/rfZ3K/fp1DKIRpJzs4Md7X6PGa
+                iQIDAQAB
+                -----END PUBLIC KEY-----
+redis:
+  hostname: localhost
+  port: 6379

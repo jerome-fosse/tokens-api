@@ -1,0 +1,14 @@
+# Docker directories
+/mongodata
+/redisdata
+
+# IntelliJ
+.idea/
+*.iml
+/target
+
+# External tool builders
+.externalToolBuilders/
+
+# Mac-OS files
+.DS_Store

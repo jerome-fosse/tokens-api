@@ -1,0 +1,27 @@
+# fichier pour lancer la conf en local avec Consul ( un consul standalone est necessaire sur le poste local ). 
+# Les valeurs de configuration devront etre placees dans le repertoire consul "/config/env/development" ou "/config/color/development"
+logging:
+  level:
+    root: INFO
+    com:
+      wcomp:
+        app: DEBUG
+
+COLOR: development
+
+features:
+  access-token-validation:
+    enabled: false
+    controller:
+      enabled: false
+      
+redis:
+  hostname: localhost
+  port: 6379
+
+# mongo
+spring:
+  data:
+    mongodb:
+      uri: "mongodb://127.0.0.1:27017/?minPoolSize=16&maxPoolSize=512&waitQueueMultiple=2&waitQueueTimeoutMS=5000"
+      database: "Tokens"

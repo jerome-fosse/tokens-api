@@ -1,0 +1,33 @@
+logging:
+  level:
+    root: INFO
+    com:
+      wcomp:
+        app: DEBUG
+
+COLOR: development
+
+redis:
+  hostname: localhost
+  port: 6379
+
+# mongo
+spring:
+  data:
+    mongodb:
+      uri: "mongodb://127.0.0.1:27017/?minPoolSize=16&maxPoolSize=512&waitQueueMultiple=2&waitQueueTimeoutMS=5000&socketTimeoutMS=2000&connectTimeoutMS=2000"
+      database: "Tokens"
+
+wcomp:
+  connect:
+    key:
+      public: |
+                -----BEGIN PUBLIC KEY-----
+                MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsA9KF0SJTMe0NwG/7XJG
+                4K4VdPmCp+S8rKenbCz2PWXgrZTLxdg/vpYfiGYGwy8EYEW4SSaPR/iCsPrYPpmZ
+                6sc1XsArfjAzjwlb4Eg7SZuAz78PGYG3lwQNNxgjNJpp9/ipUDl2btN56dWViozV
+                O3plInnVPv/ILHBxsVRebcqCneQ0jtgEx6MNf3vf1JWcYwBTjc/FlOJSYDVrVkc+
+                fUFbYmsqT6/e+Ro78R6vE76oWBJeyzQato3yF4/nZUAxzPVBClZvgsInWWMeIiMO
+                Sj+SIN5lzPTcvxsHNdH10iL/jlCgQctk4Pyry/ne+aNPOicDgXyZ0hNf161HG6rB
+                gwIDAQAB
+                -----END PUBLIC KEY-----
